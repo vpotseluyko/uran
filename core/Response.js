@@ -95,7 +95,7 @@ export class Response {
         });
         const navigates = document.querySelectorAll('[data-href]');
         [].forEach.call(navigates, el => {
-            el.onclick = () => this.core.reload(el.getAttribute('data-href'))
+            el.onclick = () => this.core.reloadSoftly(el.getAttribute('data-href'))
         })
     }
 }

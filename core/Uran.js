@@ -70,6 +70,22 @@ export class Uran {
         this.run();
     }
 
+    reloadSoftly(url) {
+        const oldPath = location.pathname;
+        window.history.pushState(null, null, url);
+        const newPath = url;
+        this.activeStack = [];
+        for (let i = 0; i < this.stack.length; i++) {
+            const fnc = this.stack[i];
+            if (fnc.path !== '*' &&
+                (!fnc.path.test(oldPath) && fnc.path.test(newPath))) {
+                this.activeStack.push(this.stack[i])
+            }
+        }
+        this.running = 0;
+        this.run();
+    }
+
     run() {
         if (typeof this.activeStack === 'undefined') {
             this.activeStack = [];
