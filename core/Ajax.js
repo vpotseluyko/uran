@@ -1,48 +1,91 @@
-class Response {
-
-    constructor(resp) {
-        this.response = resp;
-    }
-
-    json() {
-        return new Promise((resolve, reject) => {
-            try {
-                resolve(JSON.parse(this.response))
-            } catch (e) {
-                reject(e);
-            }
-        });
-    }
-
+/**
+ * @param {string|JSON} resp
+ * @constructor
+ * @class
+ */
+function AjaxResponse(resp) {
+    this.response = resp;
 }
 
-class XHR {
+/**
+ * @type {string|JSON}
+ * @public
+ */
+AjaxResponse.prototype.response = '';
 
-    constructor(method, url) {
-        this.method = method;
-        this.url = url;
-        this.headers = {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        };
-    }
+/**
+ * Returns json parse result
+ * @returns {Promise}
+ * @public
+ */
+AjaxResponse.prototype.json = function () {
+    return new Promise((resolve, reject) => {
+        try {
+            resolve(JSON.parse(this.response))
+        } catch (e) {
+            reject(e);
+        }
+    });
+};
 
-    headers(headers) {
-        this.headers = headers;
-        return this;
-    }
+/**
+ * Creates XHR instanse
+ * @param {string} method
+ * @param {string} url
+ * @constructor
+ * @class
+ */
+function XHR(method, url) {
+    /**
+     * @type {string}
+     * @private
+     */
+    this.method = method;
+    /**
+     * @type {string}
+     * @private
+     */
+    this.url = url;
+    /**
+     * @type {object}
+     * @private
+     */
+    this.headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    };
+}
 
-    data(data) {
-        this.params = data;
-        return this.send();
-    }
+/**
+ * @param {object} headers
+ * @returns {XHR}
+ * @public
+ */
+XHR.prototype.headers = function (headers) {
+    this.headers = headers;
+    return this;
+};
 
+/**
+ * @param {object|string} data
+ * @returns Promise
+ * @public
+ */
+XHR.prototype.data = function (data) {
+    this.params = data;
+    return this.send();
+};
 
-    send = () => new Promise((resolve, reject) => {
+/**
+ * @returns {Promise}
+ * @private
+ */
+XHR.prototype.send = function () {
+    return new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.open(this.method, this.url);
-        xhr.onload = function ()  {
+        xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) {
-                resolve(new Response(xhr.response));
+                resolve(new AjaxResponse(xhr.response));
             } else {
                 let e = new Error(xhr.statusText);
                 e.status = this.status;
@@ -68,14 +111,31 @@ class XHR {
         xhr.send(params);
     })
 
-}
+};
 
-export let Ajax = {
-
+/**
+ *
+ * @type {{post: (function(*=)), get: (function(*=))}}
+ */
+export const Ajax = {
+    /**
+     *
+     * @param address
+     * @returns {XHR}
+     * @static
+     * @public
+     */
     post(address) {
         return new XHR('post', address)
     },
 
+    /**
+     *
+     * @param address
+     * @returns {XHR}
+     * @static
+     * @public
+     */
     get (address) {
         return new XHR('get', address)
     }

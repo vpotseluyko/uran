@@ -1,6 +1,17 @@
 // all references for this file go to Express project
+/**
+ * @author expressjs.com
+ * @type {RegExp}
+ */
 const MATCHING_GROUP_REGEXP = /\((?!\?)/g;
 
+/**
+ * @author expressjs.com
+ * @param path
+ * @param keys
+ * @param options
+ * @returns {*}
+ */
 function pathtoRegexp(path, keys, options) {
     options = options || {};
     keys = keys || [];

@@ -1,19 +1,41 @@
-export class Router {
+/**
+ * @constructor
+ * @class
+ */
+import {Uran} from "./Uran";
 
-    constructor() {
-        this.stack = [];
-    }
-
-    getStack() {
-        return this.stack;
-    }
-
-    use(fn) {
-        if (typeof fn === 'function') {
-            this.stack.push({path: '*', cb: fn})
-        } else {
-            this.stack.push({path: arguments[0], cb: arguments[1]})
-        }
-    }
+/**
+ * @constructor
+ */
+export function Router() {
 
 }
+
+/**
+ * @type {Uran}
+ */
+Router.prototype = Uran;
+
+/**
+ * Returns router stack
+ * @returns {Array}
+ * @protected
+ */
+Router.prototype.getStack = function () {
+    return this.stack;
+};
+
+/**
+ * @param path
+ * @param fn
+ * @public
+ */
+Router.prototype.use = function (path, fn) {
+    if (typeof path === 'function') {
+        fn = arguments[0];
+        this.stack.push({path: '*', cb: fn})
+    } else {
+        this.stack.push({path, cb: fn})
+    }
+};
+

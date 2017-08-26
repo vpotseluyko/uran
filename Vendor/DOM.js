@@ -1,18 +1,23 @@
-export function getElementVal(el) {
-    if (el.tagName === "INPUT" || el.tagName === 'TEXTAREA') {
-        return el.value;
+Node.prototype.fill = function(val) {
+    if (this.tagName === "INPUT" || el.tagName === "TEXTAREA") {
+        this.value = val;
     } else {
-        return el.innerText;
+        this.innerHTML = val;
     }
-}
-export function setElementVal(el, val) {
-    if (el.tagName === "INPUT" || el.tagName === 'TEXTAREA') {
-        el.value = val;
-    } else {
-        el.innerText = val;
-    }
-}
+};
 
-export function isInput(el) {
-    return el.tagName === "INPUT" || el.tagName === 'TEXTAREA'
-}
+Node.prototype.get = function () {
+    if (this.tagName === "INPUT" || this.tagName === 'TEXTAREA') {
+        return this.value;
+    } else {
+        return this.innerHTML;
+    }
+};
+
+NodeList.prototype.fill = function (val) {
+    [].forEach.call(this, item => item.fill(val))
+};
+
+NodeList.prototype.onclick = function (cb) {
+    [].forEach.call(this, item => item.onclick = cb)
+};
