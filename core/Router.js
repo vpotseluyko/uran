@@ -8,7 +8,7 @@ import {Uran} from "./Uran";
  * @constructor
  */
 export function Router() {
-
+    this.stack = [];
 }
 
 /**
@@ -19,7 +19,7 @@ Router.prototype = Uran;
 /**
  * Returns router stack
  * @returns {Array}
- * @protected
+ * @public
  */
 Router.prototype.getStack = function () {
     return this.stack;

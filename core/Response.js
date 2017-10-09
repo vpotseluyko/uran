@@ -105,7 +105,7 @@ Response.prototype.render = function (slc, tmp, obj = {}) {
     if (slc === null) {
         this.mnt.innerHTML = tmp(this.bind);
     } else {
-        document.querySelector(slc).innerHTML = tmp(this.bind);
+        this.mnt.querySelector(slc).innerHTML = tmp(this.bind);
     }
     this.bindDOM();
 };
@@ -128,7 +128,7 @@ Response.prototype.add = function (slc = this.mnt, tmp, obj) {
     if (slc === null) {
         this.mnt.insertAdjacentHTML('beforeend', tmp(this.bind));
     } else {
-        document.querySelector(slc).insertAdjacentHTML('beforeend', tmp(this.bind));
+        this.mnt.querySelector(slc).insertAdjacentHTML('beforeend', tmp(this.bind));
     }
     this.bindDOM();
 };
@@ -151,24 +151,38 @@ Response.prototype.addBefore = function (slc = this.mnt, tmp, obj) {
     if (slc === null) {
         this.mnt.insertAdjacentHTML('afterbegin', tmp(this.bind));
     } else {
-        document.querySelector(slc).insertAdjacentHTML('afterbegin', tmp(this.bind));
+        this.mnt.querySelector(slc).insertAdjacentHTML('afterbegin', tmp(this.bind));
     }
     this.bindDOM();
 };
 
+let functions = [];
 /**
  * @private
  */
 Response.prototype.bindDOM = function () {
     const _this = this;
-    document
-        .querySelectorAll('[data-click]')
-        .onclick(function () {
-            _this.listeners[this.getAttribute('data-click')].bind(this)();
-        });
-    document
+    if (functions.length !== 3) {
+        functions[0] = function (event) {
+            setTimeout(() => _this.core.reloadSoftly(this.getAttribute('data-href')), 0);
+        };
+        functions[1] = function (event) {
+            setTimeout(() => _this.core.reload(this.getAttribute('data-reload')), 0);
+        };
+        functions[2] = function (event) {
+            setTimeout(() => _this.listeners[this.getAttribute('data-click')].bind(this)(event), 0);
+        };
+    }
+    this.mnt
         .querySelectorAll('[data-href]')
-        .onclick(function () {
-            _this.core.reloadSoftly(this.getAttribute('data-href'))
-        });
+        .removeListeners('click', functions[0])
+        .addClick(functions[0]);
+    this.mnt
+        .querySelectorAll('[data-reload]')
+        .removeListeners('click', functions[1])
+        .addClick(functions[1]);
+    this.mnt
+        .querySelectorAll('[data-click]')
+        .removeListeners('click', functions[2])
+        .addClick(functions[2]);
 };

@@ -154,6 +154,24 @@ Uran.prototype.use = function (path, fn) {
         }
     }
 };
+/**
+ * @deprecated
+ * @param fn
+ */
+Uran.prototype.always = function (fn) {
+    if (typeof fn === 'object') {
+        this.spreadRouter(fn, '!');
+    } else {
+        if (fn.length === 4) {
+            /**
+             * @private
+             */
+            this.error = fn;
+        } else {
+            this.stack.push({path: '*', cb: fn, link: '!'});
+        }
+    }
+};
 
 /**
  * Implements LazyReload
@@ -195,8 +213,15 @@ Uran.prototype.reloadSoftly = function (url) {
  * @public
  */
 Uran.prototype.reload = function (url) {
-    this.root.innerHTML = '';
+    let newRoot = this.root.cloneNode(false);
+    newRoot.style.opacity = 0;
+    newRoot.style.transitionDuration = ".5s";
+    newRoot = this.root.parentNode.appendChild(newRoot);
+    const oldroot = this.root;
+    this.root = newRoot;
+    this.Response.mnt = this.root;
     window.history.pushState(null, null, url);
+    this.path = url;
     /**
      * @type {Array}
      * @private
@@ -208,6 +233,18 @@ Uran.prototype.reload = function (url) {
      */
     this.running = 0;
     this.run();
+    oldroot.style.zIndex = 999;
+    oldroot.style.opacity = 1;
+    oldroot.style.transitionDuration = ".3s";
+    oldroot.style.opacity = 0;
+    //return;
+    setTimeout(() => {
+        this.root.style.opacity = 1;
+    }, 200);
+    //this.root.style.opacity = 1;
+    setTimeout(() => {
+        oldroot.remove();
+    }, 400);
 };
 
 /**
