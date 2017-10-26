@@ -184,7 +184,6 @@ Uran.prototype.always = function (fn) {
  * @public
  */
 Uran.prototype.reloadSoftly = function (url) {
-    document.dispatchEvent(new Event('uran:startRender'));
     const oldPath = this.path;
     window.history.pushState(null, null, url);
     this.path = url;
@@ -193,6 +192,8 @@ Uran.prototype.reloadSoftly = function (url) {
         // TODO: if allowed rerun prev activeStack. IF no, return
         return;
     }
+    document.dispatchEvent(new Event('uran:startRender'));
+
     /**
      * @type {Array}
      * @private

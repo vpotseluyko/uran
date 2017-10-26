@@ -1,6 +1,6 @@
 {
   "name": "uran",
-  "version": "1.0.26",
+  "version": "1.0.27",
   "description": "Middleware base frontend spa engine",
   "main": "index.js",
   "scripts": {
