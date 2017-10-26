@@ -98,6 +98,11 @@ Uran.prototype.running = 0;
 Uran.prototype.path = location.pathname;
 
 /**
+ * @type {function}
+ * @private
+ */
+
+/**
  * Default error function
  * @param {Error} err
  * @param {Request} req
@@ -179,6 +184,7 @@ Uran.prototype.always = function (fn) {
  * @public
  */
 Uran.prototype.reloadSoftly = function (url) {
+    document.dispatchEvent(new Event('uran:startRender'));
     const oldPath = this.path;
     window.history.pushState(null, null, url);
     this.path = url;
