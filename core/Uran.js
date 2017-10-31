@@ -62,6 +62,7 @@ Uran.prototype.mount = function (domSelector) {
      * @private
      */
     this.root = document.querySelector(domSelector);
+
     if (this.root === null) {
         throw new Error('Invalid mountpoint')
     }

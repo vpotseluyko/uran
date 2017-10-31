@@ -105,7 +105,11 @@ Response.prototype.render = function (slc, tmp, obj = {}) {
     if (slc === null) {
         this.mnt.innerHTML = tmp(this.bind);
     } else {
-        this.mnt.querySelector(slc).innerHTML = tmp(this.bind);
+        if (this.mnt !== null && typeof this.mnt !== 'undefined') {
+            this.mnt.querySelector(slc).innerHTML = tmp(this.bind);
+        } else {
+            document.querySelector(slc).innerHTML = tmp(this.bind);
+        }
     }
     this.bindDOM();
 };
@@ -128,7 +132,11 @@ Response.prototype.add = function (slc = this.mnt, tmp, obj) {
     if (slc === null) {
         this.mnt.insertAdjacentHTML('beforeend', tmp(this.bind));
     } else {
-        this.mnt.querySelector(slc).insertAdjacentHTML('beforeend', tmp(this.bind));
+        if (this.mnt !== null && typeof this.mnt !== 'undefined') {
+            this.mnt.querySelector(slc).insertAdjacentHTML('beforeend', tmp(this.bind));
+        } else {
+            document.querySelector(slc).insertAdjacentHTML('beforeend', tmp(this.bind));
+        }
     }
     this.bindDOM();
 };
@@ -148,6 +156,9 @@ Response.prototype.addBefore = function (slc = this.mnt, tmp, obj) {
         obj = arguments[1] || {};
     }
     this.addRenderProperties(obj);
+    if (this.mnt === null || typeof this.mnt === 'undefined') {
+        this.mnt = document;
+    }
     if (slc === null) {
         this.mnt.insertAdjacentHTML('afterbegin', tmp(this.bind));
     } else {
@@ -172,6 +183,9 @@ Response.prototype.bindDOM = function () {
         functions[2] = function (event) {
             setTimeout(() => _this.listeners[this.getAttribute('data-click')].bind(this)(event), 0);
         };
+    }
+    if (this.mnt === null || typeof this.mnt === 'undefined') {
+        this.mnt = document;
     }
     this.mnt
         .querySelectorAll('[data-href]')
