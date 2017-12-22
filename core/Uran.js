@@ -259,7 +259,7 @@ Uran.prototype.reload = function (url) {
  * Launch stack execution
  * @public
  */
-Uran.prototype.run = function () {
+Uran.prototype.run = async function () {
     /**
      * if activeStack not generated(first run or Uran.prototype.reload())
      */
@@ -285,12 +285,12 @@ Uran.prototype.run = function () {
         );
         return;
     }
-    this.activeStack[this.running].cb(
+    await this.activeStack[this.running].cb(
         this.Request.another(this.activeStack[this.running].link),
         this.Response,
-        () => {
+        async () => {
             this.running++;
-            this.run();
+            await this.run();
         }
     )
 };
